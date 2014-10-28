@@ -1,0 +1,82 @@
+Group All
+Group LIGHT 		(All)
+Group DEVICES		(All)
+Group ASTRO			(All)
+Group Weather		(All)
+Group Weather_Chart												(Weather)
+Group DEBUG 		(All)
+
+/*local */
+Switch Light_Master		"Verlichting"
+Switch My_State			"Gerwin"
+
+/* Lampen */
+Switch Light_Green 		"GroeneLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch1"}
+Switch Light_Staande 	"StaandeLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch2"}
+Switch Light_Read 		"LeesLamp" 			(LIGHT, Lights) {pilight="livingroom#kamer:switch4"}
+Switch Light_Computer 	"ComputerLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch5"}
+
+/* Multimedia */
+Switch Media_Subwoofer	"Subwoofer"			<socket> 	(DEVICES) {pilight="livingroom#kamer:switch3"}
+
+/* Standby killing */
+Switch Power_Desktop 	"Bureau"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch6"}
+Switch Power_Receiver 	"Receiver"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch7"}
+Switch Power_TV 		"TV"				<socket>	(DEVICES) {pilight="livingroom#kamer:switch8"}
+Switch Power_Settopbox 	"Settopbox"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch9"}
+
+
+//Pioneer
+String  AV_Status  	"Status [%s]" 					{ pioneeravr="INIT:livingroom:DISPLAY_INFO_QUERY" }
+Switch  AV_Power     "Power" 						{ pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON" }
+Switch  AV_Mute    	"Mute" 							{ pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
+Number  AV_Source  	"Source [%.1f]" 				{ pioneeravr="INCREASE:livingroom:SOURCE_UP, DECREASE:livingroom:SOURCE_DOWN, *:livingroom:SOURCE_SET" }
+Dimmer  AV_Volume 	"Volume [%.1f]%"  				{ pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
+
+//Weer
+Number Weather_Temperature  		"Temp. [%.1f °C]" 					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature.xsl)]" }
+Number Weather_Temp_Max 			"Temp. Max [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
+Number Weather_Temp_Min 			"Temp. Min [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
+Number Weather_Wind_Speed 			"Windsnelheid [%.1f m/s]"			<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
+Number Weather_Humidity				"Luchtvochtigheid [%.1f %%]"		<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
+Number Weather_Pressure				"Luchtdruk [%.1f hPa]"				<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
+Number Inside_Temperature  			"Temperatuur binnen [%.1f °C]" 		<temperature> (Weather_Chart)
+Number Inside_Humidity				"Luchtvochtigheid binnen [%.1f %%]"	<temperature> (Weather_Chart)
+		
+//Astro			
+DateTime Date    			"[%1$tA, %1$td.%1$tm.%1$tY %1$tT]"  <calendar> (Status)   { ntp="Europe/Amsterdam:nl_NL" }
+DateTime Sunrise_Time   	"Zonsopkomst [%1$tH:%1$tM]"   <calendar> (ASTRO) {astro="planet=sun, type=rise, property=start, offset=0"}	
+DateTime Sunset_Time   		"Zonsondergang [%1$tH:%1$tM]"   <calendar> (ASTRO) {astro="planet=sun, type=set, property=start, offset=-15"}	
+
+Number   Azimuth        "Azimuth [%.2f]"         (ASTRO)	{astro="planet=sun, type=position, property=azimuth"}
+Number   Elevation      "Elevation [%.2f]"       (ASTRO)	{astro="planet=sun, type=position, property=elevation"}
+
+Switch   Sunrise_Event  "Zonsopkomst"            (ASTRO)	{astro="planet=sun, type=rise, property=start, offset=0"}
+Switch   Sunset_Event   "Zonsondergang"          (ASTRO)	{astro="planet=sun, type=set, property=start, offset=-15"}
+
+
+//Debug
+Switch Network_Pi   		"Pi"   				(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.13 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
+Switch Network_Pioneer   	"Pioneer"   		(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.12 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
+Switch Network_Desktop   	"Desktop"   	   	(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.78 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
+Switch Network_Smartphone   "Smartphone"   	   	(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.67 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":120000:REGEX((.*))]" }
+
+Switch Remote_Me 		"Remote Me"				<socket>	(DEBUG) {pilight="livingroom#remote:remote1"}
+Switch Remote_Light 	"Remote Licht"			<socket>	(DEBUG) {pilight="livingroom#remote:remote2"}
+Switch Remote_XBMC 		"Remote XBMC"			<socket>	(DEBUG) {pilight="livingroom#remote:remote3"}
+Switch Remote_XBMCNext	"Remote XBMCNext"		<socket>	(DEBUG) {pilight="livingroom#remote:remote4"}
+
+//Vars:
+String XBMC_State 	"idle"
+String Phone_State	"idle"
+String Phone_HB		"idle"
+
+/*
+ * TODO:
+ * - Read temperature
+ * - Logging / persistency
+ * - Add a light sensor
+ * - Start at boot
+ */
+
+

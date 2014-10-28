@@ -1,0 +1,21 @@
+if(My_State.state == ON){
+	sendCommand(Power_Desktop, ON)
+	sendCommand(Power_Receiver, ON)
+	sendCommand(Power_TV, ON)
+	sendCommand(Power_Settopbox, ON)
+}
+else{
+	if(Network_Desktop.state == OFF){ //Make sure we dont kill the PC ;-)
+		sendCommand(Power_Desktop, OFF)
+	}
+	if(AV_Power.state == ON){
+		sendCommand(AV_Power, OFF)
+	}
+	sendCommand(Media_Subwoofer, OFF)
+	if(XBMC_State.state == 'playing'){
+		executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcStop.py")
+	}
+	sendCommand(Power_Receiver, OFF)
+	sendCommand(Power_TV, OFF)
+	sendCommand(Power_Settopbox, OFF)
+}

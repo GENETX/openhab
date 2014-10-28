@@ -1,4 +1,1 @@
-openhab
-=======
-
-OpenHAB config
+Sample config for OpenHAB
