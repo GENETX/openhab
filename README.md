@@ -1,0 +1,4 @@
+openhab
+=======
+
+OpenHAB config
