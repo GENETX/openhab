@@ -18,13 +18,16 @@ sitemap huis label="Huis"
 	Text item=Inside_Temperature {
 		Frame {
 			Text item=Inside_Temperature
-			Text item=Inside_Humidity
+			Text item=Inside_Humidity 
 			Text item=Weather_Temperature
 			Text item=Weather_Temp_Max 
 			Text item=Weather_Temp_Min
 			Text item=Weather_Wind_Speed 
 			Text item=Weather_Humidity
-			Text item=Weather_Pressure
+			Text item=Weather_Pressure 
+			Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" period=3D
+			Chart item=Inside_Humidity label="Temperatuur binnen" service="mysql" period=3D
+			Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" period=3D
 		}
 	}
 		

@@ -34,14 +34,14 @@ Number  AV_Source  	"Source [%.1f]" 				{ pioneeravr="INCREASE:livingroom:SOURCE
 Dimmer  AV_Volume 	"Volume [%.1f]%"  				{ pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
 
 //Weer
-Number Weather_Temperature  		"Temp. [%.1f °C]" 					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature.xsl)]" }
-Number Weather_Temp_Max 			"Temp. Max [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
-Number Weather_Temp_Min 			"Temp. Min [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
-Number Weather_Wind_Speed 			"Windsnelheid [%.1f m/s]"			<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
-Number Weather_Humidity				"Luchtvochtigheid [%.1f %%]"		<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
-Number Weather_Pressure				"Luchtdruk [%.1f hPa]"				<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
-Number Inside_Temperature  			"Temperatuur binnen [%.1f °C]" 		<temperature> (Weather_Chart)
-Number Inside_Humidity				"Luchtvochtigheid binnen [%.1f %%]"	<temperature> (Weather_Chart)
+Number Weather_Temperature  		"Temperatuur buiten [%.1f °C]" 					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature.xsl)]" }
+Number Weather_Temp_Max 			"Temp. buiten Max [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
+Number Weather_Temp_Min 			"Temp. buiten Min [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
+Number Weather_Wind_Speed 			"Windsnelheid [%.1f m/s]"						<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
+Number Weather_Humidity				"Luchtvochtigheid [%.1f %%]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
+Number Weather_Pressure				"Luchtdruk [%.1f hPa]"							<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
+Number Inside_Temperature  			"Temperatuur binnen [%.1f °C]" 					<temperature> (Weather_Chart)
+Number Inside_Humidity				"Luchtvochtigheid binnen [%.1f %%]"				<temperature> (Weather_Chart)
 		
 //Astro			
 DateTime Date    			"[%1$tA, %1$td.%1$tm.%1$tY %1$tT]"  <calendar> (Status)   { ntp="Europe/Amsterdam:nl_NL" }
