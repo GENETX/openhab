@@ -1,7 +1,6 @@
 //alle lichten aan
 	
 if(My_State.state == ON && Light_Master.state == ON){
-	sendCommand(Light_Green, ON)
 	sendCommand(Light_Staande, ON)
 	sendCommand(Light_Read, ON)
 	if(Network_Desktop.state == ON){
@@ -10,10 +9,11 @@ if(My_State.state == ON && Light_Master.state == ON){
 	else{
 		sendCommand(Light_Computer, OFF)
 	}
+	sendCommand(Light_Green, ON)
 }
 else{
+	sendCommand(Light_Green, OFF)
 	sendCommand(Light_Staande, OFF)
 	sendCommand(Light_Read, OFF)
-	sendCommand(Light_Green, OFF)
 	sendCommand(Light_Computer, OFF)
 }

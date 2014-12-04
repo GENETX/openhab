@@ -9,6 +9,7 @@ Group DEBUG 		(All)
 /*local */
 Switch Light_Master		"Verlichting"
 Switch My_State			"Gerwin"
+Number My_Status		" "
 
 /* Lampen */
 Switch Light_Green 		"GroeneLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch1"}
@@ -38,8 +39,8 @@ Number Weather_Temperature  		"Temperatuur buiten [%.1f °C]" 					<temperature>
 Number Weather_Temp_Max 			"Temp. buiten Max [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
 Number Weather_Temp_Min 			"Temp. buiten Min [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
 Number Weather_Wind_Speed 			"Windsnelheid [%.1f m/s]"						<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
-Number Weather_Humidity				"Luchtvochtigheid [%.1f %%]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
-Number Weather_Pressure				"Luchtdruk [%.1f hPa]"							<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
+Number Weather_Humidity				"Luchtvochtigheid buiten [%.1f %%]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
+Number Weather_Pressure				"Luchtdruk buiten [%.1f hPa]"							<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
 Number Inside_Temperature  			"Temperatuur binnen [%.1f °C]" 					<temperature> (Weather_Chart)
 Number Inside_Humidity				"Luchtvochtigheid binnen [%.1f %%]"				<temperature> (Weather_Chart)
 		
@@ -70,6 +71,8 @@ Switch Remote_XBMCNext	"Remote XBMCNext"		<socket>	(DEBUG) {pilight="livingroom#
 String XBMC_State 	"idle"
 String Phone_State	"idle"
 String Phone_HB		"idle"
+
+Number Chart_Period "Grafiekperiode"
 
 /*
  * TODO:

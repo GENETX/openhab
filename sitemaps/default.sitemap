@@ -1,54 +1,95 @@
 sitemap default label="Huis"
 {
 	/* Master switches */
-	Switch item=Light_Master label="Verlichting"
-	Switch item=My_State label="Gerwin"
-	
-	Group item=LIGHT label="Verlichting" icon="light-on"
-	Group item=DEVICES label="Apparatuur" icon="socket"
-
-	Text label="Versterker" icon="video" { 
-		Text item=AV_Status label="Status: [%s]" 
-		Switch item=AV_Power 
-		Switch item=AV_Mute mappings=[ON="Mute", OFF="Un-Mute"] 
-		Switch item=AV_Source mappings=[6=TV, 15=MEDIACENTER] 
-		Slider item=AV_Volume
-	}
-
-	Text item=Inside_Temperature {
-		Frame {
-			Text item=Inside_Temperature
-			Text item=Inside_Humidity 
-			Text item=Weather_Temperature
-			Text item=Weather_Temp_Max 
-			Text item=Weather_Temp_Min
-			Text item=Weather_Wind_Speed 
-			Text item=Weather_Humidity
-			Text item=Weather_Pressure 
-		}
-	}
-	Text label="Grafieken" icon="temperature" { 
-		Frame {
-			Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" period=3D
-			Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" period=3D
-			Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" period=3D
-			Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" period=3D
-			Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" period=3D
-			Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" period=3D
-			
-		}
-	}
+	Frame{
 		
-	Group item=ASTRO label="Astro" icon="light-on" {
-		Text item=Date
-		Text item=Sunrise_Time 
-		Text item=Sunset_Time 
-		Text item=Azimuth 
-		Text item=Elevation 
-		Switch item=Sunrise_Event
-		Switch item=Sunset_Event 
-	}
+		Switch item=Light_Master label="Verlichting"
+		Switch item=My_State label="Gerwin"
+		Switch item=My_Status label="Ik" mappings=[1="Vak.", 2="Weg", 3="Bed", 4="Thuis"]
+		
+		
+		Group item=LIGHT label="Verlichting" icon="light-on"
+		Group item=DEVICES label="Apparatuur" icon="socket"
 	
-	Group item=DEBUG label="Debug" icon="light-on"
-
+		Text label="Versterker" icon="video" { 
+			Text item=AV_Status label="Status: [%s]" 
+			Switch item=AV_Power 
+			Switch item=AV_Mute mappings=[ON="Mute", OFF="Un-Mute"] 
+			Switch item=AV_Source mappings=[6=TV, 15=MEDIACENTER] 
+			Slider item=AV_Volume
+		}
+		
+		
+	
+		Text item=Inside_Temperature {
+			Frame {
+				Text item=Inside_Temperature
+				Text item=Inside_Humidity 
+				Text item=Weather_Temperature
+				Text item=Weather_Temp_Max 
+				Text item=Weather_Temp_Min
+				Text item=Weather_Wind_Speed 
+				Text item=Weather_Humidity
+				Text item=Weather_Pressure 
+			}
+		}
+		Text label="Grafieken" icon="temperature" { 
+			Frame {
+				/*Switch item=Temperature_Chart_Period label="Chart Period"mappings=[0="Hour", 1="Day", 2="Week"]  
+				Chart item=Temperature_Chart period=h refresh=300 visibility=[Temperature_Chart_Period==0, Temperature_Chart_Period=="Uninitialized"]  
+				Chart item=Temperature_Chart period=D refresh=1800 visibility=[Temperature_Chart_Period==1]  
+				Chart item=Temperature_Chart period=W refresh=3600visibility=[Temperature_Chart_Period==2]  */
+				Switch item=Chart_Period label="P" mappings=[0="Dag", 1="Week", 2="Maand"]
+				
+				Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=300 period=D visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				
+				Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=1800 period=W visibility=[Chart_Period==1]
+				
+				Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=3600 period=M visibility=[Chart_Period==2]
+				
+				/*Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" period=3M visibility=[Chart_Period==3]
+				Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" period=3M visibility=[Chart_Period==3]
+				Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" period=3M visibility=[Chart_Period==3]
+				Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" period=3M visibility=[Chart_Period==3]
+				Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" period=3M visibility=[Chart_Period==3]
+				Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" period=3M visibility=[Chart_Period==3]
+				
+				Chart item=Inside_Temperature label="Temperatuur binnen" service="mysql" period=Y visibility=[Chart_Period==4]
+				Chart item=Inside_Humidity label="Luchtvochtigheid binnen" service="mysql" period=Y visibility=[Chart_Period==4]
+				Chart item=Weather_Temperature label="Temperatuur buiten" service="mysql" period=Y visibility=[Chart_Period==4]
+				Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" period=Y visibility=[Chart_Period==4]
+				Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" period=Y visibility=[Chart_Period==4]
+				Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" period=Y visibility=[Chart_Period==4]*/
+				
+			}
+		}
+		
+			
+		Group item=ASTRO label="Astro" icon="light-on" {
+			Text item=Date
+			Text item=Sunrise_Time 
+			Text item=Sunset_Time 
+			Text item=Azimuth 
+			Text item=Elevation 
+			Switch item=Sunrise_Event
+			Switch item=Sunset_Event 
+		}
+		
+		Group item=DEBUG label="Debug" icon="light-on"
+	}
 }
