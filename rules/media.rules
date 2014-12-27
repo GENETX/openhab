@@ -1,0 +1,87 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Date
+import java.text.SimpleDateFormat
+import org.joda.time.*
+import org.openhab.core.library.types.DecimalType
+
+var Number timeoutCounterPhone
+var Number humidMsg
+
+rule "System start"
+when 
+	System started
+then
+	sendCommand(XBMC_State, 'idle')
+end
+
+
+/*** Multimedia ***/
+rule "XBMC starts playing"
+when
+	Item XBMC_State changed from idle to playing
+then
+	if(Rule_State.state == ON){
+		//turn on pioneer... With the phone we have pause to playing ;) See what I did there :)
+		if(AV_Power.state == OFF){
+			sendCommand(AV_Source, 15)
+			sendCommand(AV_Power, ON)
+			createTimer(now.plusMillis(6000)) [ |sendCommand(AV_Volume, 45) ]
+		}
+		if(Media_Subwoofer.state == OFF){
+			sendCommand(Media_Subwoofer, ON)
+		}
+	}
+end
+
+/*** Telefoon ***/
+rule "Start call"
+when
+	Item Phone_State changed to calling
+then
+	if(Rule_State.state == ON){
+		//pause xbmc
+		if(AV_Power.state == ON){
+			sendCommand(AV_Mute, ON)
+		}
+		if(XBMC_State.state == 'playing'){
+			executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
+		}
+	}
+end
+
+rule "End call"
+when
+	Item Phone_State changed from calling to idle
+then
+	if(Rule_State.state == ON){
+		//set XBMC to play again if paused
+		if(AV_Power.state == ON){
+			sendCommand(AV_Mute, OFF)
+		}
+		if(XBMC_State.state == 'pause'){
+			executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
+		}
+	}
+end
+
+/*
+rule "Subwoofer aan"
+when 
+	Item AV_Power changed from OFF to ON
+then
+	if(Rule_State.state == ON){
+		sendCommand(Media_Subwoofer, ON)
+	}
+end
+
+rule "Subwoofer uit"
+when 
+	Item AV_Power changed from ON to OFF
+then
+	if(Rule_State.state == ON){
+		sendCommand(Media_Subwoofer, OFF)
+	}
+end
+*/

@@ -1,0 +1,62 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Date
+import java.text.SimpleDateFormat
+import org.joda.time.*
+import org.openhab.core.library.types.DecimalType
+
+rule "System start"
+when 
+	System started
+then
+	sendCommand(Remote_Light, OFF)
+	sendCommand(Remote_Me, OFF)
+	sendCommand(Remote_XBMC, OFF)
+	sendCommand(Remote_XBMCNext, OFF)
+end
+
+
+
+rule "Gerwin-remote"
+when
+	Item Remote_Me changed from OFF to ON 
+then
+	if(My_Status.state < 2){
+		sendCommand(My_Status, 4) //Home
+	} 
+	else{
+		sendCommand(My_Status, 1) //AVakantiestand
+	}
+	sendCommand(Remote_Me, OFF)
+end
+
+
+rule "Light-remote-aan"
+when
+	Item Remote_Light changed from OFF to ON 
+then
+	if(Light_Master.state == OFF){
+		sendCommand(Light_Master, ON)
+	}
+	else{
+		sendCommand(Light_Master, OFF)
+	}
+	sendCommand(Remote_Light, OFF)
+end
+
+rule "XBMC-remote-play"
+when
+	Item Remote_XBMC changed from OFF to ON 
+then
+	executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
+	createTimer(now.plusMillis(1000)) [ |sendCommand(Remote_XBMC, OFF) ]
+end
+
+rule "XBMC-remote-next"
+when
+	Item Remote_XBMCNext changed from OFF to ON 
+then
+	executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcNext.py")
+	createTimer(now.plusMillis(1000)) [ |sendCommand(Remote_XBMCNext, OFF) ]
+end

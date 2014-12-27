@@ -1,0 +1,36 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Date
+import java.text.SimpleDateFormat
+import org.joda.time.*
+import org.openhab.core.library.types.DecimalType
+
+/*Notifications*/
+/*
+var Number humidMsg
+
+rule "System start"
+when 
+	System started
+then
+	humidMsg = 0
+end
+
+rule "Luchtvochigheid-laag"
+when
+	Item Inside_Humidity changed
+then
+	if(Inside_Humidity.state < 40 && humidMsg == 0){
+		sendNotification("user@example.com", "Waarschuwing, luchtvochtigheid laag!")
+		humidMsg = 1
+	}
+	if(Inside_Humidity.state > 60 && humidMsg == 0){
+		sendNotification("user@example.com", "Waarschuwing, luchtvochtigheid hoog!")
+		humidMsg = 1
+	}
+	if(Inside_Humidity.state > 39 && Inside_Humidity.state < 59){
+		humidMsg = 0
+	}
+end
+*/

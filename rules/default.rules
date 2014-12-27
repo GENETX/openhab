@@ -7,103 +7,83 @@ import org.joda.time.*
 import org.openhab.core.library.types.DecimalType
 
 var Number timeoutCounterPhone
+var Number humidMsg
 
 rule "System start"
 when 
 	System started
 then
-	timeoutCounterPhone = 0
-	sendCommand(My_State, ON)
-	sendCommand(Network_Smartphone, ON)
-	sendCommand(Light_Master, ON)
-	sendCommand(Remote_Light, OFF)
-	sendCommand(Remote_Me, OFF)
-	sendCommand(Remote_XBMC, OFF)
-	sendCommand(Remote_XBMCNext, OFF)
+	sendCommand(Rule_State, ON)
+	sendCommand(My_Status, 4)
+
 	sendCommand(Phone_HB, 'away')
 	sendCommand(Phone_State, 'idle')
-	sendCommand(XBMC_State, 'idle')
-	callScript("standby")
-	callScript("lights")
-end
-
-/***  Verlichting ***/
-rule "licht-aan"
-when
-		Item Light_Master changed from OFF to ON
-	or
-		Item Network_Desktop changed from OFF to ON
-then 
-	callScript("standby")
-	callScript("lights")
-end
-
-rule "licht-uit"
-when
-		Item Light_Master changed from ON to OFF
-then 
-	callScript("lights")
-	callScript("standby")
-end
-
-rule "Zonsondergang"
-when
-	Item Sunset_Event received update ON
-then
-	sendCommand(Light_Master, ON)
+	
 	sendCommand(Sunset_Event, OFF)
-end
-
-rule "Zonsopkomst"
-when
-	Item Sunrise_Event received update ON
-then
-	sendCommand(Light_Master, OFF)
 	sendCommand(Sunrise_Event, OFF)
 end
 
 
-
-
+rule "Control changed"
+when
+	Item Rule_State changed
+then
+	if(Rule_State.state == ON){
+		sendCommand(CV_Control, ON)
+	}
+	if(Rule_State.state == OFF){
+		sendCommand(CV_Control, OFF)
+	}
+end
 
 /*** Mijn eigen state ***/
 rule "My_State On"
 when
-	Item My_State changed from OFF to ON
+	Item My_Status changed
 then
-	callScript("standby")
-	callScript("lights")
+	if(Rule_State.state == ON){
+		if(My_Status.state == 4){
+			callScript("standby")
+			callScript("lights")
+		}
+		else{
+			callScript("lights")
+			callScript("standby")
+		}
+		
+		/*if(My_Status.state > 1){
+			
+		}
+		if(My_Status.state == 1){
+			
+		}*/
+	}
 end
 
-rule "My_State OFF"
-when
-	Item My_State changed from ON to OFF
-then
-	callScript("lights")
-	callScript("standby")
-end
+
+
 
 rule "Update phone"
 when
 	Item Network_Smartphone received update
 then
-	if(Network_Smartphone.state == OFF){
-		//no timeout yet
-		if(timeoutCounterPhone < 5 && My_State.state == ON){
-			timeoutCounterPhone = timeoutCounterPhone + 1
+	if(Rule_State.state == ON){
+		if(Network_Smartphone.state == OFF){
+			//no timeout yet
+			if(timeoutCounterPhone < 5 && My_Status.state == 4){
+				timeoutCounterPhone = timeoutCounterPhone + 1
+			}
+			if(timeoutCounterPhone > 4 && My_Status.state == 4){
+				sendCommand(My_Status, 2) //Away
+				callScript("lights")
+				callScript("standby")
+				sendCommand(Phone_State, 'away')
+				sendCommand(Phone_HB, 'away')
+			}
 		}
-		if(timeoutCounterPhone > 4 && My_State.state == ON){
-			sendCommand(My_State, OFF) 
-			callScript("lights")
-			callScript("standby")
-			sendCommand(Phone_State, 'away')
-			sendCommand(Phone_HB, 'away')
-			//new
-			sendCommand(My_Status, 2) //Away
+		if(Network_Smartphone.state == ON){
+			timeoutCounterPhone = 0
 		}
-	}
-	if(Network_Smartphone.state == ON){
-		timeoutCounterPhone = 0
 	}
 end
 
@@ -117,11 +97,11 @@ when
 	or
 		Item Phone_State changed from charging to idle
 then
-	timeoutCounterPhone = 0
-	if(Phone_State.state != 'charging'){
-		sendCommand(My_State, ON)
-		//new
-		sendCommand(My_Status, 4) //Home
+	if(Rule_State.state == ON){
+		timeoutCounterPhone = 0
+		if(Phone_State.state.toString.matches("charging")){
+			sendCommand(My_Status, 4) //Home
+		}
 	}
 end
 
@@ -136,140 +116,16 @@ rule "Going to bed probably"
 when
 	Item Phone_State changed to charging
 then
-	if(now.getHourOfDay > 21 || now.getHourOfDay < 6){ //Only after 21, so 22 or later time to go to bed ;)
-		sendCommand(My_State, OFF) 
-		//new
-		sendCommand(My_Status, 3) //Sleeping
+	if(Rule_State.state == ON){
+		if(now.getHourOfDay > 21 || now.getHourOfDay < 6){ //Only after 21, so 22 or later time to go to bed ;)
+			sendCommand(My_Status, 3) //Sleeping
+		}
 	}
 end
 
-
-
-
-
-/*** Telefoon ***/
-rule "Start call"
+rule "Getting out of bed"
 when
-	Item Phone_State changed to calling
+	Item Phone_State changed from charging to idle
 then
-	//pause xbmc
-	if(AV_Power.state == ON){
-		sendCommand(AV_Mute, ON)
-	}
-	if(XBMC_State.state == 'playing'){
-		executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
-	}
-end
-
-rule "End call"
-when
-	Item Phone_State changed from calling to idle
-then
-	//set XBMC to play again if paused
-	if(AV_Power.state == ON){
-		sendCommand(AV_Mute, OFF)
-	}
-	if(XBMC_State.state == 'pause'){
-		executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
-	}
-end
-
- 
- 
- 
- 
-/*** Computer ***/
-rule "computer off"
-when
-	Item Network_Desktop changed from ON to OFF
-then
-	callScript("standby")
-	callScript("lights")
-end
-
-
-
-
-
-/*** Multimedia ***/
-rule "XBMC starts playing"
-when
-	Item XBMC_State changed from idle to playing
-then
-	//turn on pioneer... With the phone we have pause to playing ;) See what I did there :)
-	sendCommand(AV_Source, 15)
-	if(AV_Power.state == OFF){
-		//power on the pioneer
-		sendCommand(AV_Power, ON)
-		createTimer(now.plusMillis(6000)) [ |sendCommand(AV_Volume, 45) ]
-	}
-	if(Media_Subwoofer.state == OFF){
-		sendCommand(Media_Subwoofer, ON)
-	}
-end
-
-
-
-rule "Subwoofer aan"
-when 
-	Item AV_Power changed from OFF to ON
-then
-	sendCommand(Media_Subwoofer, ON)
-end
-
-rule "Subwoofer uit"
-when 
-	Item AV_Power changed from ON to OFF
-then
-	sendCommand(Media_Subwoofer, OFF)
-end
-
-
-
-/*Remote control*/
-rule "Gerwin-remote"
-when
-	Item Remote_Me changed from OFF to ON 
-then
-	if(My_State.state == OFF){
-		sendCommand(My_State, ON)
-		//new
-		sendCommand(My_Status, 4) //Home
-	} 
-	else{
-		sendCommand(My_State, OFF)
-		//new
-		sendCommand(My_Status, 2) //Away
-	}
-	sendCommand(Remote_Me, OFF)
-end
-
-
-rule "Light-remote-aan"
-when
-	Item Remote_Light changed from OFF to ON 
-then
-	if(Light_Master.state == OFF){
-		sendCommand(Light_Master, ON)
-	}
-	else{
-		sendCommand(Light_Master, OFF)
-	}
-	sendCommand(Remote_Light, OFF)
-end
-
-rule "XBMC-remote-play"
-when
-	Item Remote_XBMC changed from OFF to ON 
-then
-	executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcPlayPause.py")
-	createTimer(now.plusMillis(1000)) [ |sendCommand(Remote_XBMC, OFF) ]
-end
-
-rule "XBMC-remote-next"
-when
-	Item Remote_XBMCNext changed from OFF to ON 
-then
-	executeCommandLine("python /home/gerwin/Apps/openhab/extern/xbmc/xbmcNext.py")
-	createTimer(now.plusMillis(1000)) [ |sendCommand(Remote_XBMCNext, OFF) ]
+	sendCommand(Power_Settopbox, ON)
 end

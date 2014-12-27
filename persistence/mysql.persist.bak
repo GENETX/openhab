@@ -1,0 +1,57 @@
+// Persistence strategies have a name and a definition and are referred to in the "Items" section
+Strategies {
+	everyTen	: "0 0/10 * * * ?"
+	everyDay	: "0 0 0 * * ?"
+
+	// If no strategy is specified for an item entry below, the default list will be used.
+	default = everyChange 
+}
+
+/*
+ * Each line in this section defines for which item(s) which strategy(ies) should be applied.
+ * You can list single items, use "*" for all items or "groupitem*" for all members of a group
+ * item (excl. the group item itself).
+ */
+Items {
+	Inside_Temperature : strategy = everyChange, everyUpdate, restoreOnStartup
+	Inside_Humidity : strategy = everyChange, everyUpdate, restoreOnStartup
+	Rule_State : strategy = everyChange, restoreOnStartup
+	Light_Master : strategy = everyChange, restoreOnStartup
+	My_Status : strategy = everyChange, restoreOnStartup
+	Weather_Temperature : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Temp_Max : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Temp_Min : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Wind_Speed : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Humidity : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Pressure : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_Setpoint : strategy = everyChange, restoreOnStartup
+	CV_Temperature : strategy = everyChange, restoreOnStartup
+	CV_Control : strategy = everyChange, restoreOnStartup
+	CV_TempAway : strategy = everyChange, restoreOnStartup
+	CV_TempIdle : strategy = everyChange, restoreOnStartup
+	CV_TempHome : strategy = everyChange, restoreOnStartup
+	CV_TempMorning : strategy = everyChange, restoreOnStartup
+	CV_TempEvening : strategy = everyChange, restoreOnStartup
+	CV_Current : strategy = everyChange, restoreOnStartup
+	CV_Today : strategy = everyChange, restoreOnStartup
+	CV_Tomorrow : strategy = everyChange, restoreOnStartup
+	CV_PlanMon : strategy = everyChange, restoreOnStartup
+	CV_PlanTue : strategy = everyChange, restoreOnStartup
+	CV_PlanWed : strategy = everyChange, restoreOnStartup
+	CV_PlanThu : strategy = everyChange, restoreOnStartup
+	CV_PlanFri : strategy = everyChange, restoreOnStartup
+	CV_PlanSun : strategy = everyChange, restoreOnStartup
+	CV_ProgramSP : strategy = everyChange, restoreOnStartup
+	Sunrise_Time : strategy = everyChange, restoreOnStartup
+	Sunset_Time : strategy = everyChange, restoreOnStartup
+	CV_PlanSat : strategy = everyChange, restoreOnStartup
+	Remote_XBMC : strategy = restoreOnStartup
+	Remote_Me : strategy = restoreOnStartup
+	Remote_Light : strategy = restoreOnStartup
+	Remote_XBMCNext : strategy = restoreOnStartup
+	XBMC_State : strategy = everyChange, restoreOnStartup
+	Phone_State : strategy = everyChange, restoreOnStartup
+	Network_Smartphone : strategy = everyChange, restoreOnStartup
+	Network_Desktop : strategy = everyChange, restoreOnStartup
+	Network_Pioneer : strategy = everyChange, restoreOnStartup
+}

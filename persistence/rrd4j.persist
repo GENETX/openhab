@@ -1,0 +1,94 @@
+// persistence strategies have a name and a definition and are referred to in the "Items" section
+Strategies {
+	// for rrd charts, we need a cron strategy
+	perMinute : "0 * * * * ?"
+}
+
+Items {
+	Rule_State : strategy = everyChange, restoreOnStartup
+	Light_Master : strategy = everyChange, restoreOnStartup
+	My_Status : strategy = everyChange, restoreOnStartup
+	CV_Control : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_TempAway : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_TempIdle : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_TempHome : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_TempMorning : strategy = everyChange, restoreOnStartup
+	CV_TempEvening : strategy = everyChange, restoreOnStartup
+	CV_Current : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_Today : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_Tomorrow : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanMon : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanTue : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanWed : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanThu : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanFri : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanSun : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_ProgramSP : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_PlanSat : strategy = everyChange, everyUpdate, restoreOnStartup
+	Remote_XBMC : strategy = everyChange, restoreOnStartup
+	Remote_Me : strategy = reveryChange, restoreOnStartup
+	Remote_Light : strategy = everyChange, restoreOnStartup
+	Remote_XBMCNext : strategy = everyChange, restoreOnStartup
+	XBMC_State : strategy = everyChange, restoreOnStartup
+	Phone_State : strategy = everyChange, restoreOnStartup
+	Network_Smartphone : strategy = everyChange, restoreOnStartup
+	Network_Desktop : strategy = everyChange, restoreOnStartup
+	Network_Pioneer : strategy = everyChange, restoreOnStartup
+	Network_Pi : strategy = everyChange, restoreOnStartup
+	Server_CPUCombined : strategy = everyChange, everyUpdate
+	Server_CPUUSer : strategy = everyChange, everyUpdate 
+	Server_CPUSystem : strategy = everyChange, everyUpdate 
+	Server_RamUsed : strategy = everyChange, everyUpdate 
+	Server_RamFree : strategy = everyChange, everyUpdate 
+	Server_RamTotal : strategy = everyChange, everyUpdate 
+	Server_SwapUsed : strategy = everyChange, everyUpdate 
+	Openhab_CPU : strategy = everyChange, everyUpdate 
+	Openhab_RAM : strategy = everyChange, everyUpdate 
+	Server_Tx : strategy = everyChange, everyUpdate 
+	Server_Rx : strategy = everyChange, everyUpdate 
+	Kodi_CPU : strategy = everyChange, everyUpdate 
+	Kodi_RAM : strategy = everyChange, everyUpdate 
+	Backintime_CPU : strategy = everyChange, everyUpdate 
+	Backintime_RAM : strategy = everyChange, everyUpdate   	
+	
+	Inside_Temperature : strategy = everyChange, everyUpdate, restoreOnStartup
+	Inside_Humidity : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Temperature : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Temp_Max : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Temp_Min : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Wind_Speed : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Humidity : strategy = everyChange, everyUpdate, restoreOnStartup
+	Weather_Pressure : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_Setpoint : strategy = everyChange, everyUpdate, restoreOnStartup
+	CV_Temperature : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELLaag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELHoog : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELTotaal : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELLaagDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELHoogDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELTotaalDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_Gas : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasDecimal : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasTotaal : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_Water : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_WaterDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELM : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELJ : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasM : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasJ : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_WaterM : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_WaterJ : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_ELMGraph : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasMGraph : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_WaterMGraph : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GraaddagDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GraaddagGraph : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GraaddagJ : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GraaddagTotaal : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GraaddagM : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasdagDag : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasdagGraph : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GasdagJ : strategy = everyChange, everyUpdate, restoreOnStartup
+	Meter_GadagM : strategy = everyChange, everyUpdate, restoreOnStartup
+}

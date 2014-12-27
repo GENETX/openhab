@@ -1,0 +1,250 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Date
+import java.text.SimpleDateFormat
+import org.joda.time.*
+import org.openhab.core.library.types.DecimalType
+
+var Number cvSpChanged
+var Number cvManual
+
+rule "System start"
+when 
+	System started
+then
+	cvSpChanged = 0
+	cvManual = 0
+	sendCommand(CV_ProgramSP, 19)
+	sendCommand(CV_Current, 19)
+	sendCommand(CV_TempHome, 19)
+	sendCommand(CV_TempMorning, 18)
+	sendCommand(CV_TempEvening, 20)
+	sendCommand(CV_TempAway, 15)
+	sendCommand(CV_TempIdle, 17)
+end
+
+/*Daadwerkelijk acties */
+rule "CV_Update"
+when
+		Item CV_ProgramSP received update
+	or
+		Item My_Status changed
+then
+	if(CV_Control.state == ON){
+		if(CV_Today.state == 3 || My_Status.state == 1){
+			sendCommand(CV_Current, CV_TempAway.state.toString())
+		}
+		else{
+			if(CV_ProgramSP.state == CV_TempAway.state){
+				if(My_Status.state == 4){
+					//We are home, set it to idle, should be going soon
+					sendCommand(CV_Current, CV_TempIdle.state.toString())
+				}
+				else{
+					//We are gone, set it the away temperature
+					sendCommand(CV_Current, CV_ProgramSP.state.toString())
+				}	
+			}
+			else{
+				if(My_Status.state > 2){
+					//We are home, set it to the setpoint
+					sendCommand(CV_Current, CV_ProgramSP.state.toString())
+				}
+				else{
+					//We are gone, set it to idle to reduce consumption
+					sendCommand(CV_Current, CV_TempIdle.state.toString())
+				}
+			}
+		}
+	}
+	cvSpChanged = 1
+end
+
+
+rule "Going to sleep"
+when
+	Item My_Status changed to 3
+then
+	if(CV_Control.state == ON){
+		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
+		cvSpChanged = 1
+	}
+end
+
+
+rule "Set temperatuur"
+when
+	//Item CV_Current changed
+	Time cron "0 * * * * ?"   // 6:30 beginnen met voorverwarmen
+then
+	if(cvSpChanged == 1){
+		if(CV_Control.state == ON){
+			sendCommand(CV_Setpoint, CV_Current.state.toString())
+			executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/setHoneywellTemp.py")
+		}
+		cvSpChanged = 0
+	}
+end
+
+rule "Setpoint Honeywell gewijzigd"
+when
+	Item CV_Setpoint changed
+then
+	sendCommand(CV_Current, CV_Setpoint.state.toString())
+end
+
+
+rule "Manueel temperatuur veranderen"
+when
+	Item CV_Current changed
+then
+	cvSpChanged = 1
+end
+
+
+rule "Reset honeywell"
+when
+		Item CV_Control changed
+then
+	if(CV_Control.state == OFF){
+		executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/resetHoneywell.py")
+	}
+	else{
+		executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/setHoneywellTemp.py")
+	}
+end
+
+
+/*  Normal program */
+rule "Voorverwarmen in de ochtend"
+when 
+	Time cron "0 30 6 * * ?"   // 6:30 beginnen met voorverwarmen
+then
+	if(CV_Today.state == 1){
+		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
+	}
+end
+
+rule "Afkoelen in de ochtend"
+when 
+	Time cron "0 50 7 * * ?"   // 7:50 Einde verwarmen
+then
+	if(CV_Today.state == 1){
+		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
+	}
+end
+
+rule "Verwarmen in de avond"
+when 
+	Time cron "0 00 16 * * ?"   // 16:00 beginnen met voorverwarmen
+then
+	if(CV_Today.state == 1){
+		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
+	}
+end
+
+rule "Afkoelen in de ochtend"
+when 
+	Time cron "0 30 22 * * ?"   // 22:30 Naar bed gaan
+then
+	if(CV_Today.state == 1){
+		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
+	}
+end
+
+
+/* Free day */
+rule "Voorverwarmen in de ochtend"
+when 
+	Time cron "0 0 9 * * ?"   // 9:00 beginnen met voorverwarmen
+then
+	if(CV_Today.state == 2){
+		sendCommand(CV_ProgramSP, CV_TempMorning.state.toString())
+	}
+end
+
+rule "Doorverwarmen in de middag"
+when 
+	Time cron "0 0 12 * * ?"   // 12:00 Einde ochtend, nu normale temperatuur
+then
+	if(CV_Today.state == 2){
+		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
+	}
+end
+
+rule "Extra verwarming in de avond"
+when 
+	Time cron "0 30 20 * * ?"   // 20:30 extra verwarming
+then
+	if(CV_Today.state == 2){
+		sendCommand(CV_ProgramSP, CV_TempEvening.state.toString())
+	}
+end
+
+rule "Afkoelen in de avond"
+when 
+	Time cron "0 0 23 * * ?"   // 23:00 Naar bed gaan
+then
+	if(CV_Today.state == 2){
+		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
+	}
+end
+
+
+/*select days */
+rule "Activeer maandag"
+when
+  Time cron "0 0 0 ? * MON"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanTue.state.toString())
+end
+
+rule "Activeer dinsdag"
+when
+  Time cron "0 0 0 ? * TUE"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanWed.state.toString())
+end
+
+rule "Activeer woensdag"
+when
+  Time cron "0 0 0 ? * WED"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanThu.state.toString())
+end
+
+rule "Activeer donderdag"
+when
+  Time cron "0 0 0 ? * THU"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanFri.state.toString())
+end
+
+rule "Activeer vrijdag"
+when
+  Time cron "0 0 0 ? * FRI"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanSat.state.toString())
+end
+
+rule "Activeer zaterdag"
+when
+  Time cron "0 0 0 ? * SAT"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanSun.state.toString())
+end
+
+rule "Activeer zondag"
+when
+  Time cron "0 0 0 ? * SUN"
+then
+  sendCommand(CV_Today, CV_Tomorrow.state.toString())
+  sendCommand(CV_Tomorrow, CV_PlanMon.state.toString())
+end

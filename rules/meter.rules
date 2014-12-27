@@ -1,0 +1,173 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import java.util.Date
+import java.text.SimpleDateFormat
+import org.joda.time.*
+import org.openhab.core.library.types.DecimalType
+import java.lang.Math
+
+//Note to self: Kan ook met een dubbele schakelaar
+
+rule "System start"
+when 
+	System started
+then
+	//Gebruiken voor een reset
+	/*sendCommand(Meter_ELLaag, 1873)
+	sendCommand(Meter_ELHoog, 2375)
+	sendCommand(Meter_Gas, 1713)
+	sendCommand(Meter_GasDecimal, 0.0)
+	sendCommand(Meter_Water, 98)
+	
+	sendCommand(Meter_ELM, 0)
+	sendCommand(Meter_GasM, 0)
+	sendCommand(Meter_WaterM, 0)
+	sendCommand(Meter_ELJ, 0)
+	sendCommand(Meter_GasJ, 0)
+	sendCommand(Meter_WaterJ, 0)
+	
+	sendCommand(Meter_GraaddagDag , 0)
+	sendCommand(Meter_GraaddagGraph, 0)
+	sendCommand(Meter_GraaddagJ, 0)
+	sendCommand(Meter_GraaddagTotaal, 0)
+	sendCommand(Meter_GraaddagM, 0)
+	sendCommand(Meter_GasdagDag , 0)
+	sendCommand(Meter_GasdagGraph, 0)
+	sendCommand(Meter_GasdagJ, 0)
+	sendCommand(Meter_GasdagM, 0)*/
+end
+
+
+rule "Meterstanden ingeven"
+when 
+	Item Meter_Submit changed from OFF to ON
+then
+	//Get the difference
+	var Number HELL = (Meter_ELLaag.historicState(now().minusMinutes(10), "mysql").state as DecimalType)
+	var Number HELH = (Meter_ELHoog.historicState(now().minusMinutes(10), "mysql").state as DecimalType)
+	var Number ELL = (Meter_ELLaag.state as DecimalType)
+	var Number ELH = (Meter_ELHoog.state as DecimalType)
+	var Number DELL = ELL - HELL
+	var Number DELH = ELH - HELH
+	var Number DEL = DELL + DELH
+	var Number EL = ELL + ELH
+	
+	var Number HGA = (Meter_Gas.historicState(now().minusMinutes(10), "mysql").state as DecimalType)
+	var Number GA = (Meter_Gas.state as DecimalType)
+	var Number HGD = (Meter_GasDecimal.historicState(now().minusMinutes(10), "mysql").state as DecimalType)
+	var Number GD = (Meter_GasDecimal.state as DecimalType)
+	var Number HG = HGA + HGD
+	var Number G = GA + GD
+	var Number DG = G - HG
+	
+	var Number HW = (Meter_Water.historicState(now().minusMinutes(10), "mysql").state as DecimalType)
+	var Number W = (Meter_Water.state as DecimalType)
+	var Number DW = W - HW
+	
+	postUpdate(Meter_ELLaagDag, DELL)
+	postUpdate(Meter_ELHoogDag, DELH)
+	postUpdate(Meter_ELTotaal, EL)
+	postUpdate(Meter_ELTotaalDag, DEL)
+	postUpdate(Meter_GasTotaal, G)
+	postUpdate(Meter_GasDag, DG)
+	postUpdate(Meter_WaterDag, DW)
+	
+	//Update month
+	var Number ELM = (Meter_ELM.state as DecimalType)
+	var Number GasM = (Meter_GasM.state as DecimalType)
+	var Number WaterM = (Meter_WaterM.state as DecimalType)
+	var Number ELMN = ELM + DEL
+	var Number GasMN = GasM + DG
+	var Number WaterMN = WaterM + DW
+	postUpdate(Meter_ELM, ELMN)
+	postUpdate(Meter_GasM, GasMN)
+	postUpdate(Meter_WaterM, WaterMN)
+	
+	//Update year
+	var Number ELJ = (Meter_ELJ.state as DecimalType)
+	var Number GasJ = (Meter_GasJ.state as DecimalType)
+	var Number WaterJ = (Meter_WaterJ.state as DecimalType)
+	var Number ELJN = ELJ + DEL
+	var Number GasJN = GasJ + DG
+	var Number WaterJN = WaterJ + DW
+	postUpdate(Meter_ELJ, ELJN)
+	postUpdate(Meter_GasJ, GasJN)
+	postUpdate(Meter_WaterJ, WaterJN)
+	
+	createTimer(now.plusMillis(2000)) [ |sendCommand(Meter_Submit, OFF) ]
+end
+
+rule "Maandstanden doorvoeren"
+when
+	Time cron "0 0 0 1 * ?"
+then
+	sendCommand(Meter_ELMGraph, Meter_ELM.state.toString())
+	sendCommand(Meter_GasMGraph, Meter_GasM.state.toString())
+	sendCommand(Meter_WaterMGraph, Meter_WaterM.state.toString())
+	sendCommand(Meter_GraaddagGraph, Meter_GraaddagM.state.toString())
+	sendCommand(Meter_GasdagGraph, Meter_GasdagM.state.toString())
+	
+	//reset
+	sendCommand(Meter_ELM, 0)
+	sendCommand(Meter_GasM, 0)
+	sendCommand(Meter_WaterM, 0)
+	sendCommand(Meter_GraaddagM, 0)
+	sendCommand(Meter_GasdagM, 0)
+end
+
+rule "Jaarstanden doorvoeren"
+when
+	Time cron "0 0 0 1 1 ? *"
+then
+	//reset
+	sendCommand(Meter_ELJ, 0)
+	sendCommand(Meter_GasJ, 0)
+	sendCommand(Meter_WaterJ, 0)
+	sendCommand(Meter_GraaddagJ, 0)
+	sendCommand(Meter_GasdagJ, 0)
+end
+
+rule "Graaddagen berekenen"
+when
+	Time cron 0 0 0 * * ?"
+then
+	var Number AvgTI = (Inside_Temperature.averageSince(now().minusDays(1), "mysql") as DecimalType)
+	var Number AvgTO = (Weather_Temperature.averageSince(now().minusDays(1), "mysql") as DecimalType)
+	var Number GraadDag = AvgTI - AvgTO;
+	if(GraadDag <= 0){
+		sendCommand(Meter_GraaddagDag, GraadDag)
+		sendCommand(Meter_GasdagDag, GraadDag)
+		//Maand en jaar blijven gelijk
+	}
+	else{
+		postUpdate(Meter_GraaddagDag, GraadDag)
+		
+		var Number previousGDT = (Meter_GraaddagTotaal.state as DecimalType)
+		var Number GDT = previousGDT + GraadDag
+		postUpdate(Meter_GraaddagTotaal, GDT)
+		
+		var Number previousGDM = (Meter_GraaddagM.state as DecimalType)
+		var Number GDM = previousGDM + GraadDag
+		postUpdate(Meter_GraaddagM, GDM)
+		
+		var Number previousGDJ = (Meter_GraaddagJ.state as DecimalType)
+		var Number GDJ = previousGDJ + GraadDag
+		postUpdate(Meter_GraaddagJ, GDJ)
+		
+		var Number G = (Meter_GasdagDag.state as DecimalType)
+		var Number GD = G / GraadDag
+		postUpdate(Meter_GasdagDag, GD)
+		
+		var Number GM = (Meter_GasdagM.state as DecimalType)
+		var Number GasDM = GM / GDM
+		postUpdate(Meter_GasdagM, GasDM)
+		
+		var Number GJ = (Meter_GasdagJ.state as DecimalType)
+		var Number GasDJ = GJ / GDJ
+		postUpdate(Meter_GasdagM, GasDJ)
+	}
+end
+	
+	
+	

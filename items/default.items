@@ -1,85 +1,185 @@
-Group All
-Group LIGHT 		(All)
-Group DEVICES		(All)
-Group ASTRO			(All)
-Group Weather		(All)
-Group Weather_Chart												(Weather)
-Group DEBUG 		(All)
-
-/*local */
-Switch Light_Master		"Verlichting"
-Switch My_State			"Gerwin"
-Number My_Status		" "
-
-/* Lampen */
-Switch Light_Green 		"GroeneLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch1"}
-Switch Light_Staande 	"StaandeLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch2"}
-Switch Light_Read 		"LeesLamp" 			(LIGHT, Lights) {pilight="livingroom#kamer:switch4"}
-Switch Light_Computer 	"ComputerLamp" 		(LIGHT, Lights) {pilight="livingroom#kamer:switch5"}
-
-/* Multimedia */
-Switch Media_Subwoofer	"Subwoofer"			<socket> 	(DEVICES) {pilight="livingroom#kamer:switch3"}
-
-/* Standby killing */
-Switch Power_Desktop 	"Bureau"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch6"}
-Switch Power_Receiver 	"Receiver"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch7"}
-Switch Power_TV 		"TV"				<socket>	(DEVICES) {pilight="livingroom#kamer:switch8"}
-Switch Power_Settopbox 	"Settopbox"			<socket>	(DEVICES) {pilight="livingroom#kamer:switch9"}
+Group	All
+Group	LIGHT	(All)	
+Group	DEVICES	(All)	
+Group	ASTRO	(All)	
+Group	Weather	(All)	
+Group	Weather_Chart	(All)	
+Group   Graph_TempIn (All)
+Group   Graph_TempOut (All)
+Group	CV	(ALL)	
+Group 	SERVER (ALL)
+Group 	Graph_CPU (ALL)
+Group 	Graph_RAM (ALL)
+Group 	SERVERApp (ALL)
+Group 	Graph_CPUApp (ALL)
+Group 	Graph_RAMApp (ALL)
+Group 	Graph_Net (ALL)
+Group 	Graph_El (ALL)
 
 
-//Pioneer
-String  AV_Status  	"Status [%s]" 					{ pioneeravr="INIT:livingroom:DISPLAY_INFO_QUERY" }
-Switch  AV_Power     "Power" 						{ pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON" }
-Switch  AV_Mute    	"Mute" 							{ pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
-Number  AV_Source  	"Source [%.1f]" 				{ pioneeravr="INCREASE:livingroom:SOURCE_UP, DECREASE:livingroom:SOURCE_DOWN, *:livingroom:SOURCE_SET" }
-Dimmer  AV_Volume 	"Volume [%.1f]%"  				{ pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
+
+//Overige
+Switch	Rule_State	"OpenHAB Master"
+
+Switch	Light_Master	"Verlichting"
+
+Number	My_Status	" "
+
+
+
+//Verlichting
+Switch	Light_Green	"GroeneLamp"	<light>	(LIGHT,Lights)		{ pilight="livingroom#kamer:switch1" }
+Switch	Light_Staande	"StaandeLamp"	<light>	(LIGHT,Lights)		{ pilight="livingroom#kamer:switch2" }
+Switch	Light_Read	"LeesLamp"	<light>	(LIGHT,Lights)		{ pilight="livingroom#kamer:switch4" }
+Switch	Light_Computer	"ComputerLamp"	<light>	(LIGHT,Lights)		{ pilight="livingroom#kamer:switch5" }
+
+
+
+//Schakelaars
+Switch	Media_Subwoofer	"Subwoofer"	<switch>	(DEVICES)		{ pilight="livingroom#kamer:switch3" }
+Switch	Power_Desktop	"Bureau"	<switch>	(DEVICES)		{ pilight="livingroom#kamer:switch6" }
+Switch	Power_Receiver	"Receiver"	<switch>	(DEVICES)		{ pilight="livingroom#kamer:switch7" }
+Switch	Power_Settopbox	"Settopbox"	<switch>	(DEVICES)		{ pilight="livingroom#kamer:switch9" }
+
+
+
+//Pioneer receiver
+String	AV_Status	"Status [%s]"	{ pioneeravr="INIT:livingroom:DISPLAY_INFO_QUERY" }
+Switch	AV_Power	"Power"	{ pioneeravr="INIT:livingroom:POWER_QUERY, OFF:livingroom:POWER_OFF, ON:livingroom:POWER_ON" }
+Switch	AV_Mute	"Mute"	{ pioneeravr="INIT:livingroom:MUTE_QUERY, ON:livingroom:MUTE, OFF:livingroom:UNMUTE" }
+Number	AV_Source	""	{ pioneeravr="INCREASE:livingroom:SOURCE_UP, DECREASE:livingroom:SOURCE_DOWN, *:livingroom:SOURCE_SET" }
+Dimmer	AV_Volume	"Volume [%.1f]%"	{ pioneeravr="INIT:livingroom:VOLUME_QUERY,  INCREASE:livingroom:VOLUME_UP, DECREASE:livingroom:VOLUME_DOWN, *:livingroom:VOLUME_SET" }
+
+
 
 //Weer
-Number Weather_Temperature  		"Temperatuur buiten [%.1f °C]" 					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature.xsl)]" }
-Number Weather_Temp_Max 			"Temp. buiten Max [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
-Number Weather_Temp_Min 			"Temp. buiten Min [%.1f °C]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
-Number Weather_Wind_Speed 			"Windsnelheid [%.1f m/s]"						<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
-Number Weather_Humidity				"Luchtvochtigheid buiten [%.1f %%]"					<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
-Number Weather_Pressure				"Luchtdruk buiten [%.1f hPa]"							<temperature> (Weather_Chart) { http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
-Number Inside_Temperature  			"Temperatuur binnen [%.1f °C]" 					<temperature> (Weather_Chart)
-Number Inside_Humidity				"Luchtvochtigheid binnen [%.1f %%]"				<temperature> (Weather_Chart)
-		
-//Astro			
-DateTime Date    			"[%1$tA, %1$td.%1$tm.%1$tY %1$tT]"  <calendar> (Status)   { ntp="Europe/Amsterdam:nl_NL" }
-DateTime Sunrise_Time   	"Zonsopkomst [%1$tH:%1$tM]"   <calendar> (ASTRO) {astro="planet=sun, type=rise, property=start, offset=0"}	
-DateTime Sunset_Time   		"Zonsondergang [%1$tH:%1$tM]"   <calendar> (ASTRO) {astro="planet=sun, type=set, property=start, offset=-15"}	
-
-Number   Azimuth        "Azimuth [%.2f]"         (ASTRO)	{astro="planet=sun, type=position, property=azimuth"}
-Number   Elevation      "Elevation [%.2f]"       (ASTRO)	{astro="planet=sun, type=position, property=elevation"}
-
-Switch   Sunrise_Event  "Zonsopkomst"            (ASTRO)	{astro="planet=sun, type=rise, property=start, offset=0"}
-Switch   Sunset_Event   "Zonsondergang"          (ASTRO)	{astro="planet=sun, type=set, property=start, offset=-15"}
+Number	Weather_Temperature	"Temperatuur buiten [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempOut)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_temperature.xsl)]" }
+Number	Weather_Temp_Max	"Temp. buiten Max [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempOut)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_high.xsl)]" }
+Number	Weather_Temp_Min	"Temp. buiten Min [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempOut)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_temperature_low.xsl)]" }
+Number	Weather_Wind_Speed	"Windsnelheid [%.1f m/s]"	<wind>	(Weather_Chart)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_wind_speed.xsl)]" }
+Number	Weather_Humidity	"Luchtvochtigheid buiten [%.1f %%]"	<humidity>	(Weather_Chart)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_humidity.xsl)]" }
+Number	Weather_Pressure	"Luchtdruk buiten [%.1f hPa]"	<temperature>	(Weather_Chart)		{ http="<[openweathermap:300000:XSLT(openweathermap.org_pressure.xsl)]" }
 
 
-//Debug
+//CV
+Number	Inside_Temperature	"Temperatuur binnen [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempIn)	
+Number	Inside_Humidity	"Luchtvochtigheid binnen [%.1f %%]"	<humidity>	(Weather_Chart)	
+
+Number	CV_Setpoint	"Setpoint Honeywell [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempIn)	
+Number	CV_Temperature	"Temperatuur Honeywell [%.1f °C]"	<temperature>	(Weather_Chart, Graph_TempIn)	
+Switch	CV_Control	"OpenHAB control"	<switch>
+Number	CV_TempAway	"Temperatuur weg [%.1f °C]"	<temperature>
+Number	CV_TempIdle	"Temperatuur idle [%.1f °C]"	<temperature>
+Number	CV_TempHome	"Temperatuur thuis [%.1f °C]"	<temperature>
+Number	CV_TempMorning	"Temperatuur ochtend [%.1f °C]"	<temperature>
+Number	CV_TempEvening	"Temperatuur avond [%.1f °C]"	<temperature>
+Number	CV_Current	"Huidig setpoint [%.1f °C]"	<heating>
+Number	CV_Today	""
+Number	CV_Tomorrow	""
+Number	CV_PlanMon	"Programma maandag"
+Number	CV_PlanTue	"Programma dinsdag"
+Number	CV_PlanWed	"Programma woensdag"
+Number	CV_PlanThu	"Programma donderdag"
+Number	CV_PlanFri	"Programma vrijdag"
+Number	CV_PlanSat	"Programma zaterdag"
+Number	CV_PlanSun	"Programma zondag"
+Number	CV_ProgramSP	"Programma setpoint"
+
+
+//Astro
+DateTime	Sunrise_Time	"Zonsopkomst [%1$tH:%1$tM]"		<sunrise>	(ASTRO)		{ astro="planet=sun, type=rise, property=start, offset=0" }
+DateTime	Sunset_Time		"Zonsondergang [%1$tH:%1$tM]"	<sunrise>	(ASTRO)		{ astro="planet=sun, type=set, property=start, offset=-15" }
+Number		Azimuth			"Azimuth [%.2f]"							(ASTRO)		{ astro="planet=sun, type=position, property=azimuth" }
+Number		Elevation		"Elevation [%.2f]"							(ASTRO)		{ astro="planet=sun, type=position, property=elevation" }
+Switch		Sunrise_Event	"Zonsopkomst"		<sunrise>	(ASTRO)		{ astro="planet=sun, type=rise, property=start, offset=0" }
+Switch		Sunset_Event	"Zonsondergang"		<sunrise>	(ASTRO)		{ astro="planet=sun, type=set, property=start, offset=-15" }
+
+
+
+//Meters
+Number Meter_ELLaag			"Elek.stand laag [%.0f kWh]" 		<electricity>	(METER)	
+Number Meter_ELHoog			"Elek.stand hoog [%.0f kWh]" 		<electricity>	(METER)
+Number Meter_ELTotaal		"Elek.stand [%.0f kWh]" 			<electricity>	(METER)
+Number Meter_ELLaagDag		"Elek.laatste laag [%.0f kWh]" 		<electricity>	(METER, Graph_El)
+Number Meter_ELHoogDag		"Elek.laatste hoog [%.0f kWh]" 		<electricity>	(METER, Graph_El)
+Number Meter_ELTotaalDag	"Elek.laatste [%.0f kWh]" 			<electricity>	(METER, Graph_El)
+Number Meter_Gas			"Gasstand [%.0f m3]"				<gas>			(METER)
+Number Meter_GasDecimal		"Gasstand decimaal [%.1f m3]"		<gas>			(METER)
+Number Meter_GasTotaal		"Gasstand [%.1f m3]"				<gas>			(METER)
+Number Meter_GasDag			"Gas laatste [%.1f m3]"				<gas>			(METER)
+Number Meter_Water			"Waterstand [%.1f m3]" 				<water>			(METER)
+Number Meter_WaterDag		"Water laatste [%.1f m3]" 			<water>			(METER)
+Number Meter_GraaddagTotaal	"Graaddagen [%.1f]"					<temperature>	(METER)
+Number Meter_GraaddagDag	"Graadd.laastste [%.1f]"			<temperature>	(METER)
+Number Meter_GasdagDag		"Gas gd laatste [%.1f]"			<temperature>	(METER)
+
+Number Meter_ELM			"Elek.maand [%.0f kWh]" 			<electricity>	(METER)
+Number Meter_ELJ			"Elek.jaar	[%.0f kWh]" 			<electricity> 	(METER)
+Number Meter_GasM			"Gas maand [%.0f m3]"				<gas>			(METER)
+Number Meter_GasJ			"Gas jaar [%.0f m3]"				<gas>			(METER)
+Number Meter_WaterM			"Water maand [%.1f m3]" 			<water>			(METER)
+Number Meter_WaterJ			"Water jaar [%.1f m3]" 				<water>			(METER)
+Number Meter_GraaddagM		"Graadd.maand [%.1f]"				<temperature>	(METER)
+Number Meter_GraaddagJ		"Graadd.jaar [%.1f]"				<temperature>	(METER)
+Number Meter_GasdagM		"Gas gd maand [%.1f]"				<temperature>	(METER)
+Number Meter_GasdagJ		"Gas gd jaar [%.1f]"				<temperature>	(METER)
+
+Number Meter_ELMGraph		"Elek. maand [%.0f kWh]" 			<electricity>	(METER)
+Number Meter_GasMGraph		"Gas maand [%.0f m3]"				<gas>			(METER)
+Number Meter_WaterMGraph	"Water maand [%.1f m3]" 			<water>			(METER)
+Number Meter_GraaddagGraph	"Graadd.maand [%.1f]"				<temperature>	(METER)
+Number Meter_GasdagGraph	"Gas gd maand [%.1f]"				<temperature>	(METER)
+
+Switch Meter_Submit			"Doorvoeren"			(METER)
+
+
+
+//Server statistics
+Number Server_CPUCombined  	"CPU totaal [%.1f%%]"   			<cpu> 		(SERVER, Graph_CPU) { systeminfo="CpuCombined:10000" }
+Number Server_CPUUSer  		"CPU gebruiker [%.1f%%]"   			<cpu> 		(SERVER, Graph_CPU) { systeminfo="CpuUser:10000" }
+Number Server_CPUSystem    	"CPU systeem [%.1f%%]" 				<cpu> 		(SERVER, Graph_CPU) { systeminfo="CpuSystem:10000" }
+
+Number Server_RamUsed    	"Geheugen gebruikt [%.1f MB]"    	<ramon> 		(SERVER, Graph_RAM) { systeminfo="MemActualUsed:10000" }
+Number Server_RamFree    	"Geheugen vrij [%.1f MB]"    		<ramoff> 		(SERVER, Graph_RAM) { systeminfo="MemActualFree:10000" }
+Number Server_RamTotal 		"Geheugen totaal [%.1f MB]"  		<ramon> 		(SERVER) { systeminfo="MemTotal:10000" }
+Number Server_SwapUsed 		"Wisselg. gebruikt [%.1f MB]"  		<hdd> 			(SERVER, Graph_RAM) { systeminfo="SwapUsed:10000" }
+
+Number Server_TxBytes   	"Netwerk totaal [%.1f MB]"  		<internet>		(SERVER) { systeminfo="NetTxBytes:10000:eth0" }
+Number Server_RxBytes   	"Netwerk totaal [%.1f MB]"  		<internet>		(SERVER) { systeminfo="NetRxBytes:10000:eth0" }
+Number Server_Tx			"Netwerk upload [%.3f MB/s]"  		<internet>		(SERVER, Graph_Net)
+Number Server_Rx			"Netwerk download [%.3f MB/s]"  	<internet>		(SERVER, Graph_Net)
+
+Number Openhab_CPU   	"OpenHAB CPU [%.1f%%]"  			<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:$$" }
+Number Openhab_RAM   	"OpenHAB Geheugen [%.1f MB]"  		<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:$$" }
+Number Kodi_CPU   		"Kodi CPU [%.1f%%]"  				<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:xbmc.bin" }
+Number Kodi_RAM   		"Kodi Geheugen [%.1f MB]"  			<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:xbmc.bin" }
+Number Backintime_CPU   "Backintime CPU [%.1f%%]"  			<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:backintime" }
+Number Backintime_RAM   "Backintime Geheugen [%.1f MB]"  	<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:backintime" }
+
+
+
+//Remote control
+Switch	Remote_Me	"Remote Me"	<socket>	{ pilight="livingroom#remote:remote1" }
+Switch	Remote_Light	"Remote Licht"	<socket>	{ pilight="livingroom#remote:remote2" }
+Switch	Remote_XBMC	"Remote XBMC"	<socket>	{ pilight="livingroom#remote:remote3" }
+Switch	Remote_XBMCNext	"Remote XBMCNext"	<socket>	{ pilight="livingroom#remote:remote4" }
+
+
+
+//Interface
+Number	Chart_Period	"Grafiekperiode"
+Number	Chart_PeriodOut	"Grafiekperiode buiten"
+
+
+//Status updates devices
 Switch Network_Pi   		"Pi"   				(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.13 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
 Switch Network_Pioneer   	"Pioneer"   		(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.12 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
 Switch Network_Desktop   	"Desktop"   	   	(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.78 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":30000:REGEX((.*))]" }
 Switch Network_Smartphone   "Smartphone"   	   	(DEBUG)  { exec="<[/bin/sh@@-c@@ping -c 1 192.168.1.67 | grep \"packets transmitted\" | sed -e \"s/.*1 received.*/ON/\" -e \"s/.*0 received.*/OFF/\":120000:REGEX((.*))]" }
 
-Switch Remote_Me 		"Remote Me"				<socket>	(DEBUG) {pilight="livingroom#remote:remote1"}
-Switch Remote_Light 	"Remote Licht"			<socket>	(DEBUG) {pilight="livingroom#remote:remote2"}
-Switch Remote_XBMC 		"Remote XBMC"			<socket>	(DEBUG) {pilight="livingroom#remote:remote3"}
-Switch Remote_XBMCNext	"Remote XBMCNext"		<socket>	(DEBUG) {pilight="livingroom#remote:remote4"}
+String	XBMC_State	"idle"
+String	Phone_State	"idle"
+String	Phone_HB	"idle"
 
-//Vars:
-String XBMC_State 	"idle"
-String Phone_State	"idle"
-String Phone_HB		"idle"
-
-Number Chart_Period "Grafiekperiode"
-
-/*
- * TODO:
- * - Read temperature
- * - Logging / persistency
- * - Add a light sensor
- * - Start at boot
- */
 
 
