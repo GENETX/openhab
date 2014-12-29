@@ -217,8 +217,8 @@ sitemap default label="Huis"
 						Text item=Openhab_RAM				
 						Text item=Kodi_CPU
 						Text item=Kodi_RAM
-						Text item=Backintime_CPU
-						Text item=Backintime_RAM
+						//Text item=Backintime_CPU
+						//Text item=Backintime_RAM
 						
 						Text label="CPUgrafiek" icon="chart" { 
 							Frame {

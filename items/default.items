@@ -153,8 +153,8 @@ Number Openhab_CPU   	"OpenHAB CPU [%.1f%%]"  			<cpu> 			(SERVERApp, Graph_CPUA
 Number Openhab_RAM   	"OpenHAB Geheugen [%.1f MB]"  		<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:$$" }
 Number Kodi_CPU   		"Kodi CPU [%.1f%%]"  				<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:xbmc.bin" }
 Number Kodi_RAM   		"Kodi Geheugen [%.1f MB]"  			<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:xbmc.bin" }
-Number Backintime_CPU   "Backintime CPU [%.1f%%]"  			<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:backintime" }
-Number Backintime_RAM   "Backintime Geheugen [%.1f MB]"  	<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:backintime" }
+//Number Backintime_CPU   "Backintime CPU [%.1f%%]"  			<cpu> 			(SERVERApp, Graph_CPUApp) { systeminfo="ProcessCpuPercent:10000:backintime" }
+//Number Backintime_RAM   "Backintime Geheugen [%.1f MB]"  	<ramon> 		(SERVERApp, Graph_RAMApp) { systeminfo="ProcessRealMem:10000:backintime" }
 
 
 
@@ -180,6 +180,4 @@ Switch Network_Smartphone   "Smartphone"   	   	(DEBUG)  { exec="<[/bin/sh@@-c@@
 String	XBMC_State	"idle"
 String	Phone_State	"idle"
 String	Phone_HB	"idle"
-
-
 

@@ -1,10 +1,6 @@
-import org.openhab.core.library.types.*
 import org.openhab.core.persistence.*
-import org.openhab.model.script.actions.*
-import java.util.Date
-import java.text.SimpleDateFormat
-import org.joda.time.*
 import org.openhab.core.library.types.DecimalType
+import java.lang.Math
 
 rule "TX Update"
 when 
@@ -12,7 +8,7 @@ when
 then
 	var Number currentBytes = Server_TxBytes.state as DecimalType
 	var Number previousBytes = previousState as DecimalType
-	var Number result = (currentBytes - previousBytes) / 60
+	var Number result = (currentBytes - previousBytes) / 10
 	postUpdate(Server_Tx, result)
 end
 
@@ -23,6 +19,6 @@ when
 then
 	var Number currentBytes = Server_RxBytes.state as DecimalType
 	var Number previousBytes = previousState as DecimalType
-	var Number result = (currentBytes - previousBytes) / 60
+	var Number result = (currentBytes - previousBytes) / 10
 	postUpdate(Server_Rx, result)
 end

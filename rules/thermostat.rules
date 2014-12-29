@@ -5,6 +5,7 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import org.joda.time.*
 import org.openhab.core.library.types.DecimalType
+import java.lang.Math
 
 var Number cvSpChanged
 var Number cvManual
@@ -15,13 +16,13 @@ when
 then
 	cvSpChanged = 0
 	cvManual = 0
-	sendCommand(CV_ProgramSP, 19)
+	/*sendCommand(CV_ProgramSP, 19)
 	sendCommand(CV_Current, 19)
 	sendCommand(CV_TempHome, 19)
 	sendCommand(CV_TempMorning, 18)
 	sendCommand(CV_TempEvening, 20)
 	sendCommand(CV_TempAway, 15)
-	sendCommand(CV_TempIdle, 17)
+	sendCommand(CV_TempIdle, 17)*/
 end
 
 /*Daadwerkelijk acties */

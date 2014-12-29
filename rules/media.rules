@@ -1,13 +1,10 @@
 import org.openhab.core.library.types.*
 import org.openhab.core.persistence.*
 import org.openhab.model.script.actions.*
-import java.util.Date
 import java.text.SimpleDateFormat
 import org.joda.time.*
 import org.openhab.core.library.types.DecimalType
-
-var Number timeoutCounterPhone
-var Number humidMsg
+import java.lang.Math
 
 rule "System start"
 when 
