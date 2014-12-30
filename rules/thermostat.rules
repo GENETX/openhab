@@ -82,7 +82,7 @@ then
 	if(cvSpChanged == 1){
 		if(CV_Control.state == ON){
 			sendCommand(CV_Setpoint, CV_Current.state.toString())
-			executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/setHoneywellTemp.py")
+			executeCommandLine("python ../extern/honeywell/setHoneywellTemp.py")
 		}
 		cvSpChanged = 0
 	}
@@ -109,10 +109,10 @@ when
 		Item CV_Control changed
 then
 	if(CV_Control.state == OFF){
-		executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/resetHoneywell.py")
+		executeCommandLine("python ../extern/honeywell/resetHoneywell.py")
 	}
 	else{
-		executeCommandLine("python /home/gerwin/Apps/openhab/extern/honeywell/setHoneywellTemp.py")
+		executeCommandLine("python ../extern/honeywell/setHoneywellTemp.py")
 	}
 end
 

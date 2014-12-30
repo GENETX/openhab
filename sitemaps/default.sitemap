@@ -256,17 +256,17 @@ sitemap default label="Huis"
 					Frame {
 						Switch item=Chart_PeriodOut label="P" mappings=[0="Dag", 1="Week", 2="Maand"] icon="calendar"
 						
-						Chart item=Graph_TempOut service="mysql" refresh=300 period=D visibility=[Chart_PeriodOut==0, Chart_PeriodOut=="Uninitialized"]
+						Chart item=Weather_Temperature service="mysql" refresh=300 period=D visibility=[Chart_PeriodOut==0, Chart_PeriodOut=="Uninitialized"]
 						Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=300 period=D visibility=[Chart_PeriodOut==0, Chart_PeriodOut=="Uninitialized"]
 						Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=300 period=D visibility=[Chart_PeriodOut==0, Chart_PeriodOut=="Uninitialized"]
 						Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=300 period=D visibility=[Chart_PeriodOut==0, Chart_PeriodOut=="Uninitialized"]
 						
-						Chart item=Graph_TempOut service="mysql" refresh=1800 period=W visibility=[Chart_PeriodOut==1]
+						Chart item=Weather_Temperature service="mysql" refresh=1800 period=W visibility=[Chart_PeriodOut==1]
 						Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=1800 period=W visibility=[Chart_PeriodOut==1]
 						Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=1800 period=W visibility=[Chart_PeriodOut==1]
 						Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=1800 period=W visibility=[Chart_PeriodOut==1]
 						
-						Chart item=Graph_TempOut service="mysql" refresh=3600 period=M visibility=[Chart_PeriodOut==2]
+						Chart item=Weather_Temperature service="mysql" refresh=3600 period=M visibility=[Chart_PeriodOut==2]
 						Chart item=Weather_Humidity  label="Luchtvochtigheid buiten" service="mysql" refresh=3600 period=M visibility=[Chart_PeriodOut==2]
 						Chart item=Weather_Wind_Speed label="Windsnelheid buiten" service="mysql" refresh=3600 period=M visibility=[Chart_PeriodOut==2]
 						Chart item=Weather_Pressure  label="Luchtdruk buiten" service="mysql" refresh=3600 period=M visibility=[Chart_PeriodOut==2]
