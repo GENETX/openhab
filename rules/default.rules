@@ -94,7 +94,7 @@ when
 then
 	if(Rule_State.state == ON){
 		timeoutCounterPhone = 0
-		if(Phone_State.state.toString.matches("charging")){
+		if(!Phone_State.state.toString.matches("charging")){
 			sendCommand(My_Status, 4) //Home
 		}
 	}

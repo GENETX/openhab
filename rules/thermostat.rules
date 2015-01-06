@@ -77,7 +77,7 @@ end
 rule "Set temperatuur"
 when
 	//Item CV_Current changed
-	Time cron "0 * * * * ?"   // 6:30 beginnen met voorverwarmen
+	Time cron "50 * * * * ?"  
 then
 	if(cvSpChanged == 1){
 		if(CV_Control.state == ON){
@@ -118,80 +118,87 @@ end
 
 
 /*  Normal program */
-rule "Voorverwarmen in de ochtend"
+rule "Schema 1 - Voorverwarmen in de ochtend"
 when 
 	Time cron "0 30 6 * * ?"   // 6:30 beginnen met voorverwarmen
 then
-	if(CV_Today.state == 1){
+	if(CV_Today.state==1){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV11")
 		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
 	}
 end
 
-rule "Afkoelen in de ochtend"
+rule "Schema 1 - Afkoelen in de ochtend"
 when 
 	Time cron "0 50 7 * * ?"   // 7:50 Einde verwarmen
 then
-	if(CV_Today.state == 1){
+	if(CV_Today.state==1){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV12")
 		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
 	}
 end
 
-rule "Verwarmen in de avond"
+rule "Schema 1 - Verwarmen in de avond"
 when 
-	Time cron "0 00 16 * * ?"   // 16:00 beginnen met voorverwarmen
+	Time cron "0 0 16 * * ?"   // 16:00 beginnen met voorverwarmen
 then
-	if(CV_Today.state == 1){
+	if(CV_Today.state==1){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV13")
 		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
 	}
 end
 
-rule "Afkoelen in de ochtend"
+rule "Schema 1 - Afkoelen in de avond"
 when 
 	Time cron "0 30 22 * * ?"   // 22:30 Naar bed gaan
 then
-	if(CV_Today.state == 1){
+	if(CV_Today.state==1){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV14")
 		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
 	}
 end
 
 
 /* Free day */
-rule "Voorverwarmen in de ochtend"
+rule "Schema 2 - Voorverwarmen in de ochtend"
 when 
 	Time cron "0 0 9 * * ?"   // 9:00 beginnen met voorverwarmen
 then
-	if(CV_Today.state == 2){
+	if(CV_Today.state==2){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV21")
 		sendCommand(CV_ProgramSP, CV_TempMorning.state.toString())
 	}
 end
 
-rule "Doorverwarmen in de middag"
+rule "Schema 2 - Doorverwarmen in de middag"
 when 
-	Time cron "0 0 12 * * ?"   // 12:00 Einde ochtend, nu normale temperatuur
+	Time cron "0 30 12 * * ?"   // 12:30 Einde ochtend, nu normale temperatuur
 then
-	if(CV_Today.state == 2){
+	if(CV_Today.state==2){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV22")
 		sendCommand(CV_ProgramSP, CV_TempHome.state.toString())
 	}
 end
 
-rule "Extra verwarming in de avond"
+rule "Schema 2 - Extra verwarming in de avond"
 when 
 	Time cron "0 30 20 * * ?"   // 20:30 extra verwarming
 then
-	if(CV_Today.state == 2){
+	if(CV_Today.state==2){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV23")
 		sendCommand(CV_ProgramSP, CV_TempEvening.state.toString())
 	}
 end
 
-rule "Afkoelen in de avond"
+rule "Schema 2 - Afkoelen in de avond"
 when 
 	Time cron "0 0 23 * * ?"   // 23:00 Naar bed gaan
 then
-	if(CV_Today.state == 2){
+	if(CV_Today.state==2){
+		executeCommandLine("python ../extern/pushbullet/pushbullet.py CV24")
 		sendCommand(CV_ProgramSP, CV_TempAway.state.toString())
 	}
 end
-
 
 /*select days */
 rule "Activeer maandag"

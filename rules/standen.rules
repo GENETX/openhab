@@ -133,15 +133,17 @@ then
 		var Number GDJ = previousGDJ + GraadDag
 		postUpdate(Meter_GraaddagJ, GDJ)
 		
-		var Number G = (Meter_GasdagDag.state as DecimalType)
+		var Number G = (Meter_GasDag.state as DecimalType)
 		var Number GD = G / GraadDag
 		postUpdate(Meter_GasdagDag, GD)
 		
 		var Number GM = (Meter_GasdagM.state as DecimalType)
+		GM = GM + G
 		var Number GasDM = GM / GDM
 		postUpdate(Meter_GasdagM, GasDM)
 		
 		var Number GJ = (Meter_GasdagJ.state as DecimalType)
+		GJ = GJ + G
 		var Number GasDJ = GJ / GDJ
 		postUpdate(Meter_GasdagJ, GasDJ)
 	}
